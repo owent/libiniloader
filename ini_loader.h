@@ -20,8 +20,8 @@
  *   2014-07-14: 修正空值问题, 优化API
  */
 
-#ifndef _MATRIX_COMPONENT_INI_INILOADER_H_
-#define _MATRIX_COMPONENT_INI_INILOADER_H_
+#ifndef _UTIL_CONFIG_INI_INILOADER_H_
+#define _UTIL_CONFIG_INI_INILOADER_H_
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
