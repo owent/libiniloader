@@ -18,6 +18,7 @@
  *
  * @history
  *   2014-07-14: 修正空值问题, 优化API
+ *   2015-02-02: 修正字符串未配置会导致崩溃的BUG
  */
 
 #ifndef _UTIL_CONFIG_INI_INILOADER_H_
@@ -103,7 +104,7 @@ namespace util {
             // 数值转换操作
             template<typename _Tt>
             inline _Tt as(size_t index = 0) const {
-                if (index < _data.size()) {
+                if (index <= _data.size()) {
                     return string2any<_Tt>(_data[index]);
                 }
 
