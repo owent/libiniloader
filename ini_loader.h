@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file ini_loader.h
  * @brief ini解析器
  * Licensed under the MIT licenses.
@@ -57,6 +57,7 @@ namespace util {
             template<typename _Tt>
             inline void clear_data(_Tt& data) const {}
 
+            inline void clear_data(char*& data) const { data = NULL; }
             inline void clear_data(std::string& data) const { data.clear(); }
             inline void clear_data(bool& data) const { data = false; }
             inline void clear_data(char& data) const { data = 0; }
@@ -71,12 +72,14 @@ namespace util {
             inline void clear_data(unsigned long long& data) const { data = 0; }
 
             template<typename _Tt>
-            inline _Tt string2any(const char* data) const {
+            inline _Tt string2any(const std::string& data) const {
                 _Tt ret;
                 clear_data(ret);
-                std::stringstream s_stream;
-                s_stream.str(data);
-                s_stream >> ret;
+                if (!data.empty()) {
+                    std::stringstream s_stream;
+                    s_stream.str(data);
+                    s_stream >> ret;
+                }
                 return ret;
             }
 
@@ -101,10 +104,10 @@ namespace util {
             template<typename _Tt>
             inline _Tt as(size_t index = 0) const {
                 if (index < _data.size()) {
-                    return string2any<_Tt>(_data[index].c_str());
+                    return string2any<_Tt>(_data[index]);
                 }
 
-                return string2any<_Tt>(get_empty_string().c_str());
+                return string2any<_Tt>(get_empty_string());
             }
 
             // 获取存储对象的字符串
