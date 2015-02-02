@@ -104,7 +104,7 @@ namespace util {
             // 数值转换操作
             template<typename _Tt>
             inline _Tt as(size_t index = 0) const {
-                if (index <= _data.size()) {
+                if (index < _data.size()) {
                     return string2any<_Tt>(_data[index]);
                 }
 

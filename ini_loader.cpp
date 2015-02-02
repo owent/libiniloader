@@ -54,7 +54,7 @@ namespace util {
 
         const std::string& ini_value::as_cpp_string(size_t index) const
         {
-            if (index <= _data.size()) {
+            if (index < _data.size()) {
                 return _data[index];
             }
 
