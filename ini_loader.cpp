@@ -499,6 +499,15 @@ namespace util {
                 clear();
             }
 
+            char utf8_bom[3] = {0};
+            in.readsome(utf8_bom, 3);
+            if (!(
+                static_cast<char>(0xef) == utf8_bom[0] && 
+                static_cast<char>(0xbb) == utf8_bom[1] &&
+                static_cast<char>(0xbf) == utf8_bom[2])) {
+                in.seekg(-3, std::ios::cur);
+            }
+
             std::string line;
             while (std::getline(in, line)) {
                 analysis::sentence one_sentence;
