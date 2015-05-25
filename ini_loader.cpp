@@ -500,7 +500,10 @@ namespace util {
             }
 
             char utf8_bom[3] = {0};
-            in.readsome(utf8_bom, 3);
+            utf8_bom[0] = in.get();
+            utf8_bom[1] = in.get();
+            utf8_bom[2] = in.get();
+
             if (!(
                 static_cast<char>(0xef) == utf8_bom[0] && 
                 static_cast<char>(0xbb) == utf8_bom[1] &&
