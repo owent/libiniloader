@@ -499,15 +499,13 @@ namespace util {
                 clear();
             }
 
-            char utf8_bom[3] = {0};
-            utf8_bom[0] = in.get();
-            utf8_bom[1] = in.get();
-            utf8_bom[2] = in.get();
-
-            if (!(
-                static_cast<char>(0xef) == utf8_bom[0] && 
-                static_cast<char>(0xbb) == utf8_bom[1] &&
-                static_cast<char>(0xbf) == utf8_bom[2])) {
+            unsigned char test_bom[3] = {0};
+            test_bom[0] = in.get();
+            test_bom[1] = in.get();
+            test_bom[2] = in.get();
+            const unsigned char utf8_bom[3] = {0xef, 0xbb, 0xbf};
+                 
+            if (0 != memcpy(test_bom, utf8_bom, 3)) {
                 in.seekg(-3, std::ios::cur);
             }
 
