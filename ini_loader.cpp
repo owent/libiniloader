@@ -505,7 +505,7 @@ namespace util {
             test_bom[2] = in.get();
             const unsigned char utf8_bom[3] = {0xef, 0xbb, 0xbf};
                  
-            if (0 != memcpy(test_bom, utf8_bom, 3)) {
+            if (0 != memcmp(test_bom, utf8_bom, 3)) {
                 in.seekg(-3, std::ios::cur);
             }
 
