@@ -268,14 +268,18 @@ namespace util {
 
                 ++begin;
                 spaces spliter;
+                bool push_front = true;
                 while (begin < end) {
                     // trim left
                     begin = spliter.parse(begin, end);
                     const char* start = begin;
-                    while (begin < end && (*begin) != ':' && (*begin) != ']') {
+                    while (begin < end && (*begin) != ':' && (*begin) != '.' && (*begin) != ']') {
                         ++begin;
                     }
-
+                    
+                    char stop_char = begin < end ? (*begin): 0;
+                    
+                    
                     // trim right
                     while (begin > start && spaces::test_char(*(begin - 1))) {
                         --begin;
@@ -283,19 +287,30 @@ namespace util {
 
                     if (start < begin) {
                         // 提取key
-                        _keys.push_front(std::make_pair(start, begin));
+                        if (push_front) {
+                            _keys.push_front(std::make_pair(start, begin));
+                        } else {
+                            _keys.push_back(std::make_pair(start, begin));
+                        }
                     }
 
 
                     begin = spliter.parse(begin, end);
 
-                    if (begin >= end || (*begin) != ':') {
-                        // 略过结尾的 ] 字符
-                        if (begin < end) {
-                            ++begin;
-                        }
-
+                    if (begin >= end) {
                         break;
+                    }
+                    
+                    // 略过结尾的 ] 字符
+                    if ((*begin) == ']') {
+                        ++begin;
+                        break;
+                    }
+                    
+                    if ('.' == stop_char) {
+                        push_front = false;
+                    } else if (':' == stop_char) {
+                        push_front = true;
                     }
 
                     begin = spliter.parse(begin + 1, end);

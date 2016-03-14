@@ -56,7 +56,7 @@ bool GameConf::init() {
 
     conf_loader.load_file(CONFIG_FILE);
 
-    // Í¨µÀÅäÖÃ
+    // é€šé“é…ç½®
     {
         conf_loader.dump_to("channel.mem_bus.buffer.max_length", channel.membus_buffer_length);
         conf_loader.dump_to("channel.network.buffer.max_length", channel.network_buffer_length);
@@ -64,7 +64,7 @@ bool GameConf::init() {
     }
 
 
-    // Ä¬ÈÏ×ÊÔ´ºÍ½Å±¾Ä¿Â¼ÅäÖÃ
+    // é»˜è®¤èµ„æºå’Œè„šæœ¬ç›®å½•é…ç½®
     {
         std::list<std::string> paths;
         conf_loader.dump_to("resource.res.dir", paths);
@@ -88,7 +88,7 @@ bool GameConf::init() {
         conf_loader.dump_to("resource.script.vserver.logic_block_init_number", vserver.logic_block_init_number);
     }
 
-    // ÈÕÖ¾ÅäÖÃ
+    // æ—¥å¿—é…ç½®
     {
         conf_loader.dump_to("system.log.level", log.level);
         conf_loader.dump_to("system.log.auto_update_time", log.auto_update_time);
@@ -116,8 +116,14 @@ bool GameConf::init() {
 int main() {
 	GameConf gconf;
 	
+    puts("===== before load ini =====");
 	printf("system.log.print_time: %s(%p)\n", gconf.log.print_time.c_str(), gconf.log.print_time.c_str());
+    printf("resource.script.vserver.main: %s\n", gconf.vserver.main.c_str());
+    
 	gconf.init();
+    
+    puts("===== after load ini =====");
 	printf("system.log.print_time: %s(%p)\n", gconf.log.print_time.c_str(), gconf.log.print_time.c_str());
+    printf("resource.script.vserver.main: %s\n", gconf.vserver.main.c_str());
 	return 0;
 }

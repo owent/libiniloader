@@ -1,76 +1,14 @@
-libiniloader
-============
-
-libiniloader 是一个简洁的ini配置读取库，仅需要两个文件。
-
-
-注意
-------
-本库读取ini的方式和标准ini有略微不同，主要区别如下：
-
-1. 支持Section
-2. Secion支持父子关系,即 [ A : B : C ] 语法
-3. 支持多重父子关系,如 C.B.A = d
-4. 支持字符串转义，其中以'包裹的不进行转义，以"包裹的可进行转义,如 C.B.A = "Hello \r\n World!\0"
-5. 配置的Key名称不能包含引号('和")、点(.)、冒号(:)和方括号([])
-6. 配置的Key名称区分大小写
-7. #符号也将是做行注释，与 ; 等价
-
-
-使用方法
-------
-使用libiniloader非常简单，只需要包含头文件 ini_loader.h 并编译源文件 ini_loader.cpp 即可
-
-其他文档详见 [ini_loader.h](ini_loader.h) 文件内注释
-
-使用示例
-------
-ini文件：(test.ini)
-
-```ini
-a.b.c1 = 123  # 整数
-a.b.c2 = 1.23 ; 小数
-
-[a : b:c:d]
-e.f1 = "123\0456" ; 可转义字符串
-
-e.f2 = '123\0456'; 不可转义字符串
-
-[d . c:b.a]
-e.f3 = 123456789
-
-[a]
-b.c3 = 带空格    的 字符		串
-
-arr = 1
-arr = 2   
-arr = 3   
-arr = 		一坨屎
-arr = 		/usr/local/gcc-4.8.2
-
-
-bool = true
-bool = false
-bool = yes
-bool = no
-bool = enable
-bool = disable
-bool = 1
-bool = 0
-```
-
-测试代码:
-```cpp
 #include <vector>
 #include <list>
 #include <cstdio>
 #include "ini_loader.h"
 
+#define CONFIG_FILE "test.ini"
 
 int main(){
     util::config::ini_loader cfg_loader;
 
-    cfg_loader.load_file("test.ini");
+    cfg_loader.load_file(CONFIG_FILE);
 
 
     // 转储整数
@@ -128,15 +66,3 @@ int main(){
 
     return 0;
 }
-```
-
-LICENSE
-------
-MIT License
-
-
-联系作者
-------
-E-Mail: [owt5008137@live.com](mailto:owt5008137@live.com) | [admin@owent.net](mailto:admin@owent.net)
-
-QQ: 493749449 (请注明 github-libiniloader)

@@ -12,13 +12,14 @@
  * 6. 配置的Key名称区分大小写
  * 7. #符号也将是做行注释，与 ; 等价
  *
- * @version 1.0
+ * @version 1.0.1.0
  * @author owentou, owt5008137@live.com
  * @date 2013年11月16日
  *
  * @history
  *   2014-07-14: 修正空值问题, 优化API
  *   2015-02-02: 修正字符串未配置会导致崩溃的BUG
+ *   2016-04-14: Section部分也支持使用.来分割层级
  */
 
 #ifndef _UTIL_CONFIG_INI_INILOADER_H_
@@ -35,8 +36,11 @@
 #include <list>
 #include <vector>
 
+// ================= 版本号 =================
+#define LIBINILOADER_VERSION "1.0.1.0"
+
 namespace util {
-    namespace config {
+    namespace config {        
         // ================= 错误码 =================
         enum EN_INILOADER_ERROR_CODE
         {
