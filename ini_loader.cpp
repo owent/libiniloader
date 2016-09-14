@@ -631,7 +631,7 @@ namespace util {
             analysis::spaces spliter;
             begin = spliter.parse(begin, end);
 
-            begin = _keys.parse(begin, end);
+            _keys.parse(begin, end);
             analysis::section::list_type::iterator iter = _keys._keys.begin();
             for (; iter != _keys._keys.end(); ++iter) {
                 if (iter->first >= iter->second) {
