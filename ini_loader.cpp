@@ -7,6 +7,58 @@
 
 namespace util {
     namespace config {
+        namespace detail {
+            template <typename T>
+            T str2int(const char *str) {
+                T out = 0;
+                if (NULL == str || !(*str)) {
+                    return out;
+                }
+
+                // negative
+                bool is_negative = false;
+                while(*str && *str == '-') {
+                    is_negative = !is_negative;
+                    ++ str;
+                }
+
+                if(!(*str)) {
+                    return out;
+                }
+
+                if ('0' == str[0] && 'x' == str[1]) { // hex
+                    for (size_t i = 2; str[i]; ++i) {
+                        char c = static_cast<char>(::tolower(str[i]));
+                        if (c >= '0' && c <= '9') {
+                            out <<= 4;
+                            out += c - '0';
+                        } else if (c >= 'a' && c <= 'f') {
+                            out <<= 4;
+                            out += c - 'a' + 10;
+                        } else {
+                            break;
+                        }
+                    }
+                } else if ('\\' == str[0]) { // oct
+                    for (size_t i = 0; str[i] >= '0' && str[i] < '8'; ++i) {
+                        out <<= 3;
+                        out += str[i] - '0';
+                    }
+                } else { // dec
+                    for (size_t i = 0; str[i] >= '0' && str[i] <= '9'; ++i) {
+                        out *= 10;
+                        out += str[i] - '0';
+                    }
+                }
+
+                if (is_negative) {
+                    out = (~out) + 1;
+                }
+
+                return out;
+            }
+        }
+
         ini_value::ini_value() {
         }
 
@@ -63,27 +115,27 @@ namespace util {
 
         char ini_value::as_char(size_t index) const
         {
-            return as<char>(index);
+            return detail::str2int<char>(as_cpp_string().c_str());
         }
 
         short ini_value::as_short(size_t index) const
         {
-            return as<short>(index);
+            return detail::str2int<short>(as_cpp_string().c_str());
         }
 
         int ini_value::as_int(size_t index) const
         {
-            return as<int>(index);
+            return detail::str2int<int>(as_cpp_string().c_str());
         }
 
         long ini_value::as_long(size_t index) const
         {
-            return as<long>(index);
+            return detail::str2int<long>(as_cpp_string().c_str());
         }
 
         long long ini_value::as_longlong(size_t index) const
         {
-            return as<long long>(index);
+            return detail::str2int<long long>(as_cpp_string().c_str());
         }
 
         double ini_value::as_double(size_t index) const
@@ -104,67 +156,67 @@ namespace util {
         // ============ unsigned ============
         unsigned char ini_value::as_uchar(size_t index) const
         {
-            return as<unsigned char>(index);
+            return detail::str2int<unsigned char>(as_cpp_string().c_str());
         }
 
         unsigned short ini_value::as_ushort(size_t index) const
         {
-            return as<unsigned short>(index);
+            return detail::str2int<unsigned short>(as_cpp_string().c_str());
         }
 
         unsigned int ini_value::as_uint(size_t index) const
         {
-            return as<unsigned int>(index);
+            return detail::str2int<unsigned int>(as_cpp_string().c_str());
         }
 
         unsigned long ini_value::as_ulong(size_t index) const
         {
-            return as<unsigned long>(index);
+            return detail::str2int<unsigned long>(as_cpp_string().c_str());
         }
 
         unsigned long long ini_value::as_ulonglong(size_t index) const
         {
-            return as<unsigned long long>(index);
+            return detail::str2int<unsigned long long>(as_cpp_string().c_str());
         }
 
         int8_t ini_value::as_int8(size_t index) const
         {
-            return static_cast<int8_t>(as_int(index));
+            return detail::str2int<int8_t>(as_cpp_string().c_str());
         }
 
         uint8_t ini_value::as_uint8(size_t index) const
         {
-            return static_cast<uint8_t>(as_uint(index));
+            return detail::str2int<uint8_t>(as_cpp_string().c_str());
         }
 
         int16_t ini_value::as_int16(size_t index) const
         {
-            return as<int16_t>(index);
+            return detail::str2int<int16_t>(as_cpp_string().c_str());
         }
 
         uint16_t ini_value::as_uint16(size_t index) const
         {
-            return as<uint16_t>(index);
+            return detail::str2int<uint16_t>(as_cpp_string().c_str());
         }
 
         int32_t ini_value::as_int32(size_t index) const
         {
-            return as<int32_t>(index);
+            return detail::str2int<int32_t>(as_cpp_string().c_str());
         }
 
         uint32_t ini_value::as_uint32(size_t index) const
         {
-            return as<uint32_t>(index);
+            return detail::str2int<uint32_t>(as_cpp_string().c_str());
         }
 
         int64_t ini_value::as_int64(size_t index) const
         {
-            return as<int64_t>(index);
+            return detail::str2int<int64_t>(as_cpp_string().c_str());
         }
 
         uint64_t ini_value::as_uint64(size_t index) const
         {
-            return as<uint64_t>(index);
+            return detail::str2int<uint64_t>(as_cpp_string().c_str());
         }
 
         namespace analysis
