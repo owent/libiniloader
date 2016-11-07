@@ -616,7 +616,9 @@ namespace util {
                         opr_node = &get_node(key, opr_node);
                     }
 
-                    opr_node->add(one_sentence._exp.second._value._value);
+                    if (!one_sentence._exp.second._value._value.empty()) {
+                        opr_node->add(one_sentence._exp.second._value._value);
+                    }
                 }
             }
 
