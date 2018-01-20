@@ -27,6 +27,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <list>
 #include <map>
 #include <sstream>
@@ -45,6 +46,11 @@ namespace util {
             EIEC_SUCCESS = 0,
             EIEC_OPENFILE = -1,
         };
+        // 时间区间
+        struct duration_value {
+            time_t sec;  // 秒
+            time_t nsec; // 纳秒
+        };
         // ----------------- 错误码 -----------------
 
         // ================= 存储层 =================
@@ -58,32 +64,26 @@ namespace util {
 
 
             template <typename _Tt>
-            inline void clear_data(_Tt &data) const {}
+            inline static void clear_data(_Tt &) {}
 
-            inline void clear_data(char *&data) const { data = NULL; }
-            inline void clear_data(std::string &data) const { data.clear(); }
-            inline void clear_data(bool &data) const { data = false; }
-            inline void clear_data(char &data) const { data = 0; }
-            inline void clear_data(short &data) const { data = 0; }
-            inline void clear_data(int &data) const { data = 0; }
-            inline void clear_data(long &data) const { data = 0; }
-            inline void clear_data(long long &data) const { data = 0; }
-            inline void clear_data(unsigned char &data) const { data = 0; }
-            inline void clear_data(unsigned short &data) const { data = 0; }
-            inline void clear_data(unsigned int &data) const { data = 0; }
-            inline void clear_data(unsigned long &data) const { data = 0; }
-            inline void clear_data(unsigned long long &data) const { data = 0; }
-
-            template <typename _Tt>
-            inline _Tt string2any(const std::string &data) const {
-                _Tt ret;
-                clear_data(ret);
-                if (!data.empty()) {
-                    std::stringstream s_stream;
-                    s_stream.str(data);
-                    s_stream >> ret;
-                }
-                return ret;
+            inline static void clear_data(float &data) { data = 0.0f; }
+            inline static void clear_data(double &data) { data = 0.0; }
+            inline static void clear_data(char *&data) { data = NULL; }
+            inline static void clear_data(std::string &data) { data.clear(); }
+            inline static void clear_data(bool &data) { data = false; }
+            inline static void clear_data(char &data) { data = 0; }
+            inline static void clear_data(short &data) { data = 0; }
+            inline static void clear_data(int &data) { data = 0; }
+            inline static void clear_data(long &data) { data = 0; }
+            inline static void clear_data(long long &data) { data = 0; }
+            inline static void clear_data(unsigned char &data) { data = 0; }
+            inline static void clear_data(unsigned short &data) { data = 0; }
+            inline static void clear_data(unsigned int &data) { data = 0; }
+            inline static void clear_data(unsigned long &data) { data = 0; }
+            inline static void clear_data(unsigned long long &data) { data = 0; }
+            inline static void clear_data(duration_value &data) {
+                data.sec = 0;
+                data.nsec = 0;
             }
 
         public:
@@ -103,14 +103,87 @@ namespace util {
 
             static const std::string &get_empty_string();
 
+
+        private:
+            template <typename _Tt, typename _TVOID>
+            struct as_helper;
+
+            template <typename _TVOID>
+            struct as_helper< ::util::config::duration_value, _TVOID> {
+                inline static ::util::config::duration_value convert(const ini_value &val, size_t index) { return val.as_duration(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<int8_t, _TVOID> {
+                inline static int8_t convert(const ini_value &val, size_t index) { return val.as_int8(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<uint8_t, _TVOID> {
+                inline static uint8_t convert(const ini_value &val, size_t index) { return val.as_uint8(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<int16_t, _TVOID> {
+                inline static int16_t convert(const ini_value &val, size_t index) { return val.as_int16(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<uint16_t, _TVOID> {
+                inline static uint16_t convert(const ini_value &val, size_t index) { return val.as_uint16(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<int32_t, _TVOID> {
+                inline static int32_t convert(const ini_value &val, size_t index) { return val.as_int32(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<uint32_t, _TVOID> {
+                inline static uint32_t convert(const ini_value &val, size_t index) { return val.as_uint32(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<int64_t, _TVOID> {
+                inline static int64_t convert(const ini_value &val, size_t index) { return val.as_int64(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<uint64_t, _TVOID> {
+                inline static uint64_t convert(const ini_value &val, size_t index) { return val.as_uint64(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<const char *, _TVOID> {
+                inline static const char *convert(const ini_value &val, size_t index) { return val.as_string(index); }
+            };
+
+            template <typename _TVOID>
+            struct as_helper<std::string, _TVOID> {
+                inline static std::string convert(const ini_value &val, size_t index) { return val.as_cpp_string(index); }
+            };
+
+            template <typename _Tt, typename _TVOID>
+            struct as_helper {
+                inline static _Tt string2any(const std::string &data) {
+                    _Tt ret;
+                    ini_value::clear_data(ret);
+                    if (!data.empty()) {
+                        std::stringstream s_stream;
+                        s_stream.str(data);
+                        s_stream >> ret;
+                    }
+                    return ret;
+                }
+
+                inline static _Tt convert(const ini_value &val, size_t index) { return string2any(val.as_cpp_string(index)); }
+            };
+
+        public:
             // 数值转换操作
             template <typename _Tt>
             inline _Tt as(size_t index = 0) const {
-                if (index < _data.size()) {
-                    return string2any<_Tt>(_data[index]);
-                }
-
-                return string2any<_Tt>(get_empty_string());
+                return as_helper<_Tt, void>::convert(*this, index);
             }
 
             // 获取存储对象的字符串
@@ -157,6 +230,8 @@ namespace util {
             int64_t as_int64(size_t index = 0) const;
 
             uint64_t as_uint64(size_t index = 0) const;
+
+            duration_value as_duration(size_t index = 0) const;
         };
         // ----------------- 存储层 -----------------
 

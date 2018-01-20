@@ -1,12 +1,12 @@
-#include <string>
+﻿#include "../ini_loader.h"
 #include <cstdio>
 #include <list>
-#include "../ini_loader.h"
+#include <string>
+
 
 #define CONFIG_FILE "config.ini"
 
-struct GameConf
-{
+struct GameConf {
     GameConf();
     struct ChannelConfig {
         size_t membus_buffer_length;
@@ -48,8 +48,7 @@ struct GameConf
     bool init();
 };
 
-GameConf::GameConf() {
-}
+GameConf::GameConf() {}
 
 bool GameConf::init() {
     util::config::ini_loader conf_loader;
@@ -109,21 +108,42 @@ bool GameConf::init() {
         conf_loader.dump_to("system.log.fs.enable_buffer", log.fs_enable_buffer);
     }
 
+    // 转储时间周期
+    {
+        util::config::duration_value dur;
+        conf_loader.dump_to("system.interval_ns", dur, true);
+        printf("system.interval_ns: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        conf_loader.dump_to("system.interval_us", dur, true);
+        printf("system.interval_us: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        conf_loader.dump_to("system.interval_ms", dur, true);
+        printf("system.interval_ms: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        conf_loader.dump_to("system.interval_s", dur, true);
+        printf("system.interval_s: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        conf_loader.dump_to("system.interval_m", dur, true);
+        printf("system.interval_m: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        conf_loader.dump_to("system.interval_h", dur, true);
+        printf("system.interval_h: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        conf_loader.dump_to("system.interval_d", dur, true);
+        printf("system.interval_d: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        conf_loader.dump_to("system.interval_w", dur, true);
+        printf("system.interval_w: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+    }
+
     return true;
 }
 
 
 int main() {
-	GameConf gconf;
-	
+    GameConf gconf;
+
     puts("===== before load ini =====");
-	printf("system.log.print_time: %s(%p)\n", gconf.log.print_time.c_str(), gconf.log.print_time.c_str());
+    printf("system.log.print_time: %s(%p)\n", gconf.log.print_time.c_str(), gconf.log.print_time.c_str());
     printf("resource.script.vserver.main: %s\n", gconf.vserver.main.c_str());
-    
-	gconf.init();
-    
+
+    gconf.init();
+
     puts("===== after load ini =====");
-	printf("system.log.print_time: %s(%p)\n", gconf.log.print_time.c_str(), gconf.log.print_time.c_str());
+    printf("system.log.print_time: %s(%p)\n", gconf.log.print_time.c_str(), gconf.log.print_time.c_str());
     printf("resource.script.vserver.main: %s\n", gconf.vserver.main.c_str());
-	return 0;
+    return 0;
 }

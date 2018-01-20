@@ -15,6 +15,15 @@ libiniloader 是一个简洁的ini配置读取库，仅需要两个文件。
 5. 配置的Key名称不能包含引号('和")、点(.)、冒号(:)和方括号([])
 6. 配置的Key名称区分大小写
 7. #符号也将是做行注释，与 ; 等价
+8. 支持解析时间长度（dump_to到\:\:util\:\:config\:\:duration_value类型），单位如下
+  + 纳秒: ns, nanosecond, nanoseconds     如: 100ns
+  + 微秒: us, microsecond, microseconds   如: 100us
+  + 毫秒: ms, millisecond, milliseconds   如: 100ms
+  + 秒: s, sec, second, seconds           如: 100s
+  + 分: m, minute, minutes                如: 100m
+  + 时: h, hour, hours                    如: 100h
+  + 天: d, day, days                      如: 100d
+  + 周: w, week, weeks                    如: 100w
 
 
 使用方法
@@ -124,6 +133,27 @@ int main(){
             printf("t2[%d] = %s\n", (int) index ++, (*iter) ? "true" : "false");
         }
 
+    }
+
+    // 转储时间周期
+    {
+        util::config::duration_value dur;
+        cfg_loader.dump_to("system.interval_ns", dur, true);
+        printf("system.interval_ns: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        cfg_loader.dump_to("system.interval_us", dur, true);
+        printf("system.interval_us: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        cfg_loader.dump_to("system.interval_ms", dur, true);
+        printf("system.interval_ms: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        cfg_loader.dump_to("system.interval_s", dur, true);
+        printf("system.interval_s: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        cfg_loader.dump_to("system.interval_m", dur, true);
+        printf("system.interval_m: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        cfg_loader.dump_to("system.interval_h", dur, true);
+        printf("system.interval_h: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        cfg_loader.dump_to("system.interval_d", dur, true);
+        printf("system.interval_d: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
+        cfg_loader.dump_to("system.interval_w", dur, true);
+        printf("system.interval_w: sec %lld, nsec: %lld\n", static_cast<long long>(dur.sec), static_cast<long long>(dur.nsec));
     }
 
     return 0;
